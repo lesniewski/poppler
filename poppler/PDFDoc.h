@@ -286,9 +286,17 @@ public:
     PDFSubtypeConformance getPDFSubtypeConformance() const { return pdfConformance; }
 
     // Return the PDF version specified by the file (either header or catalog).
-    int getPDFMajorVersion() const { return std::max(headerPdfMajorVersion, catalog->getPDFMajorVersion()); }
+    int getPDFMajorVersion() const {
+        if (catalog == nullptr) {
+            return headerPdfMajorVersion;
+        }
+        return std::max(headerPdfMajorVersion, catalog->getPDFMajorVersion());
+    }
     int getPDFMinorVersion() const
     {
+        if (catalog == nullptr) {
+            return headerPdfMinorVersion;
+        }
         const int catalogMajorVersion = catalog->getPDFMajorVersion();
         if (catalogMajorVersion > headerPdfMajorVersion) {
             return catalog->getPDFMinorVersion();
